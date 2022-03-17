@@ -49,27 +49,25 @@ public class UserDao {
         }
 
 
-        public User editUser(Integer id,User user) throws IllegalAccessException {
-            if(id == null){
-               throw new IllegalAccessException(String.format("user with %s not found", id));
-            }
+        public User editUser(Integer id,User user)  {
+
             Optional<User> userToEdit = users.stream().filter(e->e.getId() == id).findFirst();
             if(userToEdit.isPresent()){
                 userToEdit.get().setName(user.getName());
                 userToEdit.get().setBirthDate(user.getBirthDate());
+                return userToEdit.get();
             }
-            return userToEdit.get();
+            return null;
         }
 
 
-        public void deleteUser(Integer id) throws IllegalAccessException {
-            if(id == null){
-                throw new IllegalAccessException("user with %s not found"+ id);
-            }
+        public User deleteUser(Integer id)  {
+
             Optional<User> userToDelete = users.stream().filter(e->e.getId() == id).findFirst();
            if(userToDelete.isPresent()){
                users.remove(userToDelete.get());
            }
+           return null;
         }
 
 }

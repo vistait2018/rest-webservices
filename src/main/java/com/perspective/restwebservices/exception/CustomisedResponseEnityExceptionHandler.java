@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @ControllerAdvice
@@ -17,14 +18,14 @@ public class CustomisedResponseEnityExceptionHandler
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> handleAllException(Exception ex, WebRequest request){
-        ExceptionResponse er = new ExceptionResponse(new Date(), ex.getMessage(),request.getDescription(false));
+        ExceptionResponse er = new ExceptionResponse(LocalDateTime.now(), ex.getMessage(),request.getDescription(false));
         return new ResponseEntity<>(er, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 
     @ExceptionHandler(UserNotFoundException.class)
     public final ResponseEntity<Object> handleUsrNotFoundException(UserNotFoundException ex, WebRequest request){
-        ExceptionResponse er = new ExceptionResponse(new Date(), ex.getMessage(),request.getDescription(false));
+        ExceptionResponse er = new ExceptionResponse(LocalDateTime.now(), ex.getMessage(),request.getDescription(false));
         return new ResponseEntity<>(er, HttpStatus.NOT_FOUND);
     }
 

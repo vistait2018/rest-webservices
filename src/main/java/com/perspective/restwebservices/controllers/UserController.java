@@ -49,22 +49,22 @@ public class UserController {
 
     @PostMapping("/{id}")
     public User editUser(@PathVariable int id, @RequestBody User user) {
-        try {
-            return userDao.editUser(id,user);
-        }catch (Exception ex){
-            return null;
-        }
+           if(this.userDao.getUserById(id) == null){
+               throw new UserNotFoundException(id);
+           }
+             User editedUser =userDao.editUser(id,user);
+           return editedUser;
+
 
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> editUser(@PathVariable int id) {
-        try {
-            userDao.deleteUser(id);
-            return  new ResponseEntity<>("User deleted", HttpStatus.OK);
-        }catch (Exception ex){
-            return null;
+    public void deleteUser(@PathVariable int id) {
+        if(this.userDao.getUserById(id) == null){
+            throw new UserNotFoundException(id);
         }
+            userDao.deleteUser(id);
+
 
     }
 
