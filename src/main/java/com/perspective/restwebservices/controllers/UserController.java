@@ -3,14 +3,17 @@ package com.perspective.restwebservices.controllers;
 import com.perspective.restwebservices.dao.UserDao;
 import com.perspective.restwebservices.exception.UserNotFoundException;
 import com.perspective.restwebservices.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("users")
 @RestController
@@ -38,7 +41,7 @@ public class UserController {
 
 
     @PostMapping("")
-    public ResponseEntity<Object> createUser(@RequestBody User user){
+    public ResponseEntity<Object> createUser(@Valid @RequestBody User user){
        User savedUser = userDao.createUser(user);
         URI location =ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(savedUser.getId())
@@ -59,11 +62,15 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable int id) {
+    public ResponseEntity<Object> deleteUser(@PathVariable int id) {
         if(this.userDao.getUserById(id) == null){
             throw new UserNotFoundException(id);
         }
-            userDao.deleteUser(id);
+           Optional<User> deletedUser = userDao.deleteUser(id);
+        if(deletedUser.isPresent()){
+            return new ResponseEntity<>(deletedUser.get(),HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Could not delete User", HttpStatus.INTERNAL_SERVER_ERROR);
 
 
     }

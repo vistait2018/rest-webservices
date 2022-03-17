@@ -3,15 +3,22 @@ package com.perspective.restwebservices.model;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.Date;
+
+
 
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
     private Integer id;
+
+    @Size(min=2,message = "minimum length for name is 2")
     private String name;
-    private Date birthDate;
+
+    @Past
+    private LocalDate birthDate;
 
     public Integer getId() {
         return id;
@@ -29,11 +36,11 @@ public class User {
         this.name = name;
     }
 
-    public Date getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
