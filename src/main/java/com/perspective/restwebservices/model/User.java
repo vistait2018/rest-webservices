@@ -2,6 +2,7 @@ package com.perspective.restwebservices.model;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User  extends RepresentationModel<User> {
     private Integer id;
 
     @Size(min=2,message = "minimum length for name is 2")

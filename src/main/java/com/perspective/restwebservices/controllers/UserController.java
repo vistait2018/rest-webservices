@@ -9,11 +9,15 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.hateoas.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RequestMapping("users")
 @RestController
@@ -27,7 +31,20 @@ public class UserController {
 
     @GetMapping({"","/"})
     public List<User> getUsers(){
-       return userDao.getUsers();
+        List<User> users= userDao.getUsers();
+        Link userLink = null;
+        Link updateUserLink = null;
+        for(User u : users){
+             userLink = linkTo(methodOn(UserController.class)
+                    .getUserswithId(u.getId())).withRel("user");
+             if(!u.hasLinks()){
+                 u.add(userLink);
+             }
+
+        }
+
+       return users;
+
     }
 
     @GetMapping("/{id}")
@@ -35,8 +52,13 @@ public class UserController {
         User user = userDao.getUserById(id);
        if(user == null)
            throw new UserNotFoundException(id);
-
-       return user;
+       // this get self link
+        //Link selfLink = linkTo(UserController.class).slash(id).withSelfRel();
+        Link usersLink = linkTo(methodOn(UserController.class)
+                .getUsers()).withRel("all-users");
+        //user.add(selfLink);
+        user.add(usersLink);
+        return user;
     }
 
 
